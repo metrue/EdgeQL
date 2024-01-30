@@ -2,8 +2,7 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { unstable_dev } from 'wrangler'
 import type { UnstableDevWorker } from 'wrangler'
 
-// TODO enable this
-describe.skip('Worker', () => {
+describe('Worker', () => {
 	let worker: UnstableDevWorker
 
 	beforeAll(async () => {

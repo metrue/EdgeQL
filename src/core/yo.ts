@@ -21,18 +21,16 @@ export default class Yo {
     env: Environment,
     exeContext: ExecutionContext
   ): Promise<Response> => {
-    const ctx = new Context(request, env, exeContext, this.graph)
-
-    if (request.method !== 'GET' && request.method !== 'POST') {
-      return ctx.json('GraphQL only supports GET and POST requests.', {
-        status: 405,
-      })
-    }
-
-    try {
-      await ctx.process()
+    let ctx: Context
+    try { 
+      ctx = await Context.from(
+        request, 
+        env,
+        exeContext, 
+        this.graph,
+      )
     } catch (e) {
-      return ctx.json({
+      return new Response(JSON.stringify({
         data: null,
         errors: [
           new GraphQLError(`GraphQL params error: ${e}`, {
@@ -41,6 +39,12 @@ export default class Yo {
             },
           }),
         ],
+      }))
+    }
+
+    if (request.method !== 'GET' && request.method !== 'POST') {
+      return ctx.json('GraphQL only supports GET and POST requests.', {
+        status: 405,
       })
     }
 
