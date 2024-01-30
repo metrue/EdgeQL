@@ -22,4 +22,8 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - run: yarn install --frozen-lockfile
       - run: yarn run lint
-      - run: yarn test
+      - name: 'Test'
+        run: npx vitest --coverage.enabled true
+      - name: 'Report Coverage'
+        if: always() 
+        uses:  davelosert/vitest-coverage-report-action@v2
