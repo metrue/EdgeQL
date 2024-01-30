@@ -24,8 +24,8 @@
   "scripts": {
     "start": "http_proxy='' https_proxy='' wrangler dev",
     "deploy": "http_proxy='' https_proxy=''  wrangler deploy",
-    "test:watch": "http_proxy='' https_proxy='' vitestA",
-    "test": "http_proxy='' https_proxy='' vitest --run",
+    "test:watch": "vitest",
+    "test": " vitest --run",
     "lint": "eslint --ext js,ts src .eslintrc.cjs",
     "lint:fix": "eslint --ext js,ts src .eslintrc.cjs --fix"
   },
