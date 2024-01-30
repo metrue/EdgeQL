@@ -1,16 +1,7 @@
-import {
-	GraphQLSchema,
-  validateSchema,
-  Source,
-  DocumentNode,
-  parse,
-  ExecutionResult,
-  execute,
-  GraphQLError,
-} from 'graphql'
-import { ExecutionContext, Environment } from '../types';
-import { GraphQLRequest} from './types'
-import { getGraphQLRequest } from './utils'
+import { validateSchema, Source, parse, execute, GraphQLError } from 'graphql'
+import type { GraphQLSchema, ExecutionResult, DocumentNode } from 'graphql'
+import type { ExecutionContext, Environment } from '../types'
+import type { GraphQLRequest } from './types'
 
 export default class Yo {
   public graph!: GraphQLSchema
@@ -25,11 +16,7 @@ export default class Yo {
     this.graph = schema
   }
 
-	fetch = async (
-		request: Request,
-		env: Environment,
-		ctx: ExecutionContext
-	): Promise<Response> => {
+  fetch = async (request: Request, env: Environment, ctx: ExecutionContext): Promise<Response> => {
     if (request.method !== 'GET' && request.method !== 'POST') {
       return new Response('GraphQL only supports GET and POST requests.', {
         status: 405,
@@ -37,49 +24,84 @@ export default class Yo {
     }
     const res = await this.handle(request)
     if (res.extensions?.status) {
-		  return new Response(JSON.stringify(res), {
+      return new Response(JSON.stringify(res), {
         status: Number(res.extensions.status),
-		  });
+      })
     }
-		return new Response(JSON.stringify(res), {
+    return new Response(JSON.stringify(res), {
       status: 200,
-		});
+    })
   }
 
-	async handle(request: Request): Promise<ExecutionResult> {
-    let params: GraphQLRequest
+  async handle(request: Request): Promise<ExecutionResult> {
+    let req: GraphQLRequest
     try {
-      params = await getGraphQLRequest(request)
+      const contentType = request.headers.get('content-type')
+
+      switch (contentType) {
+        case 'application/graphql':
+          req = { query: await request.text() }
+          break
+        case 'application/json': {
+          try {
+            req = await request.json()
+          } catch (e) {
+            if (e instanceof Error) {
+              console.error(`${e.stack || e.message}`)
+            }
+            throw Error(`POST body sent invalid JSON: ${e}`)
+          }
+          break
+        }
+        case 'application/x-www-form-urlencoded': {
+          const text = await request.text()
+          const searchParams = new URLSearchParams(text)
+          const res: { [params: string]: string } = {}
+          searchParams.forEach((v, k) => (res[k] = v))
+          req = res
+          break
+        }
+        default:
+          return {
+            data: null,
+            errors: [
+              new GraphQLError('invalid content type of request', {
+                extensions: {
+                  status: 400,
+                },
+              }),
+            ],
+          }
+      }
     } catch (e) {
       return {
         data: null,
         errors: [
           new GraphQLError(`GraphQL params error: ${e}`, {
             extensions: {
-              status: 400
-            }
-          })
-        ]
+              status: 400,
+            },
+          }),
+        ],
       }
     }
 
-    const { query, variables, operationName } = params
-    if (!query) {
+    if (!req.query) {
       return {
         data: null,
         errors: [
-          new GraphQLError(`Must provide query string`, {
+          new GraphQLError('Must provide query string', {
             extensions: {
-              status: 400
-            }
-          })
-        ]
+              status: 400,
+            },
+          }),
+        ],
       }
     }
 
     let documentAST: DocumentNode
     try {
-      documentAST = parse(new Source(query, 'GraphQL request'))
+      documentAST = parse(new Source(req.query, 'GraphQL request'))
     } catch (syntaxError: unknown) {
       if (syntaxError instanceof Error) {
         console.error(`${syntaxError.stack || syntaxError.message}`)
@@ -90,22 +112,21 @@ export default class Yo {
         errors: [
           new GraphQLError(`GraphQL syntax error.: ${syntaxError}`, {
             extensions: {
-              status: 400
-            }
-          })
-        ]
+              status: 400,
+            },
+          }),
+        ],
       }
     }
 
-    let result
     try {
       return await execute({
         schema: this.graph,
         document: documentAST,
         rootValue: null,
         contextValue: request,
-        variableValues: variables,
-        operationName: operationName,
+        variableValues: req.variables,
+        operationName: req.operationName,
       })
     } catch (contextError: unknown) {
       const res: ExecutionResult = {
@@ -113,12 +134,12 @@ export default class Yo {
         errors: [
           new GraphQLError(`GraphQL execution context error: ${contextError}`, {
             extensions: {
-              status: 500
-            }
-          })
-        ]
+              status: 500,
+            },
+          }),
+        ],
       }
       return res
     }
-	}
+  }
 }

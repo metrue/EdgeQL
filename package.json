@@ -3,6 +3,19 @@
   "version": "0.0.0",
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20240117.0",
+    "@types/crypto-js": "^4.1.1",
+    "@types/glob": "^8.0.0",
+    "@types/jest": "^29.0.2",
+    "@types/node": "^17.0.29",
+    "@typescript-eslint/eslint-plugin": "^5.21.0",
+    "@typescript-eslint/parser": "^5.21.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-define-config": "^1.4.0",
+    "eslint-import-resolver-typescript": "^2.7.1",
+    "eslint-plugin-eslint-comments": "^3.2.0",
+    "eslint-plugin-flowtype": "^8.0.3",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-node": "^11.1.0",
     "typescript": "^5.3.3",
     "vitest": "^1.2.2",
     "wrangler": "3.25.0"
@@ -11,10 +24,17 @@
   "scripts": {
     "start": "http_proxy='' https_proxy='' wrangler dev",
     "deploy": "http_proxy='' https_proxy=''  wrangler deploy",
-    "test": "http_proxy='' https_proxy='' vitest"
+    "test": "http_proxy='' https_proxy='' vitest",
+    "lint": "eslint --ext js,ts src .eslintrc.cjs",
+    "lint:fix": "eslint --ext js,ts src .eslintrc.cjs --fix"
   },
   "dependencies": {
     "@pothos/core": "^3.41.0",
-    "graphql": "^16.8.1"
+    "eslint": "^8.56.0",
+    "graphql": "^16.8.1",
+    "prettier": "^3.2.4"
+  },
+  "engines": {
+    "node": ">=16.0.0"
   }
 }
