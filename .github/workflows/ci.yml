@@ -23,7 +23,7 @@ jobs:
       - run: yarn install --frozen-lockfile
       - run: yarn run lint
       - name: 'Test'
-        run: npx vitest --coverage.enabled true
+        run: npx vitest --coverage.enabled true --run
       - name: 'Report Coverage'
         if: always() 
         uses:  davelosert/vitest-coverage-report-action@v2
