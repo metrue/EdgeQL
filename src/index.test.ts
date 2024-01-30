@@ -18,11 +18,11 @@ describe("Worker", () => {
 	it("should return Hello World", async () => {
 		const req = {
 query:`
-query H {
-	hello
+query H($name: String) {
+	hello(name: $name)
 }
 `,	
-			variables: {},
+			variables: { name: 'Yo' },
 			operationName: 'H',
 		}
 		const resp = await worker.fetch('http://localhost', {
@@ -36,7 +36,7 @@ query H {
 			const data = await resp.json();
 			expect(data).toEqual({
 				data: {
-					hello: null,
+					hello: 'hello, Yo',
 				},
 			})
 		}

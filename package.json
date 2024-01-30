@@ -9,11 +9,12 @@
   },
   "private": true,
   "scripts": {
-    "start": "wrangler dev",
-    "deploy": "wrangler deploy",
-    "test": "vitest"
+    "start": "http_proxy='' https_proxy='' wrangler dev",
+    "deploy": "http_proxy='' https_proxy=''  wrangler deploy",
+    "test": "http_proxy='' https_proxy='' vitest"
   },
   "dependencies": {
+    "@pothos/core": "^3.41.0",
     "graphql": "^16.8.1"
   }
 }
