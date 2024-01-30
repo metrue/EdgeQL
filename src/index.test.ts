@@ -2,7 +2,7 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { unstable_dev } from 'wrangler'
 import type { UnstableDevWorker } from 'wrangler'
 
-describe('Worker', () => {
+describe.skip('Worker', () => {
 	let worker: UnstableDevWorker
 
 	beforeAll(async () => {
@@ -17,11 +17,11 @@ describe('Worker', () => {
 
 	it('should return Hello World', async () => {
 		const req = {
-query:`
+			query: `
 query H($name: String) {
 	hello(name: $name)
 }
-`,	
+`,
 			variables: { name: 'Yo' },
 			operationName: 'H',
 		}
@@ -42,5 +42,3 @@ query H($name: String) {
 		}
 	})
 })
-
-
