@@ -1,5 +1,5 @@
-import Yo from './core/yo'
 import SchemaBuilder from '@pothos/core'
+import Yo from './core/yo'
 
 const builder = new SchemaBuilder({})
 builder.queryType({

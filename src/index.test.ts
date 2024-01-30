@@ -1,21 +1,21 @@
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
-import { unstable_dev } from "wrangler";
-import type { UnstableDevWorker } from "wrangler";
+import { afterAll, beforeAll, describe, expect, it } from 'vitest'
+import { unstable_dev } from 'wrangler'
+import type { UnstableDevWorker } from 'wrangler'
 
-describe("Worker", () => {
-	let worker: UnstableDevWorker;
+describe('Worker', () => {
+	let worker: UnstableDevWorker
 
 	beforeAll(async () => {
-		worker = await unstable_dev("src/index.ts", {
+		worker = await unstable_dev('src/index.ts', {
 			experimental: { disableExperimentalWarning: true },
-		});
-	});
+		})
+	})
 
 	afterAll(async () => {
-		await worker.stop();
-	});
+		await worker.stop()
+	})
 
-	it("should return Hello World", async () => {
+	it('should return Hello World', async () => {
 		const req = {
 query:`
 query H($name: String) {
@@ -31,16 +31,16 @@ query H($name: String) {
 				'Content-Type': 'application/json',
 			},
 			body: JSON.stringify(req),
-		});
+		})
 		if (resp) {
-			const data = await resp.json();
+			const data = await resp.json()
 			expect(data).toEqual({
 				data: {
 					hello: 'hello, Yo',
 				},
 			})
 		}
-	});
-});
+	})
+})
 
 
