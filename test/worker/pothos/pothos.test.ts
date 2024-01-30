@@ -2,12 +2,13 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { unstable_dev } from 'wrangler'
 import type { UnstableDevWorker } from 'wrangler'
 
-// TODO enable it, somehow not it's not working on github action
-describe.skip('Worker', () => {
+describe('Worker', () => {
 	let worker: UnstableDevWorker
 
 	beforeAll(async () => {
-		worker = await unstable_dev('src/index.ts', {
+		worker = await unstable_dev('./test/worker/pothos/pothos.ts', {
+			ip: '127.0.0.1',
+			local: true,
 			experimental: { disableExperimentalWarning: true },
 		})
 	})

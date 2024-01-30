@@ -1,10 +1,13 @@
 import { validateSchema, execute, GraphQLError } from 'graphql'
 import type { GraphQLSchema } from 'graphql'
+import { compose } from './compose'
 import { Context } from './context'
-import type { ExecutionContext, Environment } from './types'
+import type { ExecutionContext, Environment, Middleware } from './types'
 
-export default class Yo {
+export class Yo {
   public graph!: GraphQLSchema
+
+  private middlewares: Middleware[] = []
 
   register({ schema }: { schema: GraphQLSchema }) {
     const schemaValidationErrors = validateSchema(schema)
@@ -22,24 +25,21 @@ export default class Yo {
     exeContext: ExecutionContext
   ): Promise<Response> => {
     let ctx: Context
-    try { 
-      ctx = await Context.from(
-        request, 
-        env,
-        exeContext, 
-        this.graph,
-      )
+    try {
+      ctx = await Context.from(request, env, exeContext, this.graph)
     } catch (e) {
-      return new Response(JSON.stringify({
-        data: null,
-        errors: [
-          new GraphQLError(`GraphQL params error: ${e}`, {
-            extensions: {
-              status: 400,
-            },
-          }),
-        ],
-      }))
+      return new Response(
+        JSON.stringify({
+          data: null,
+          errors: [
+            new GraphQLError(`GraphQL params error: ${e}`, {
+              extensions: {
+                status: 400,
+              },
+            }),
+          ],
+        })
+      )
     }
 
     if (request.method !== 'GET' && request.method !== 'POST') {
@@ -48,12 +48,14 @@ export default class Yo {
       })
     }
 
-    return await this.handle(ctx)
+    await compose([...this.middlewares, this.handle])(ctx)
+    return ctx.json()
   }
 
-  async handle(ctx: Context): Promise<Response> {
+  async handle(ctx: Context) {
     if (!ctx.query) {
-      return ctx.json({
+      ctx.res.status = 400
+      ctx.res.data = {
         data: null,
         errors: [
           new GraphQLError('Must provide query string', {
@@ -62,11 +64,13 @@ export default class Yo {
             },
           }),
         ],
-      })
+      }
+      return
     }
 
     if (!ctx.document) {
-      return ctx.json({
+      ctx.res.status = 400
+      ctx.res.data = {
         data: null,
         errors: [
           new GraphQLError(`could not generate document from query: ${ctx.query}`, {
@@ -75,21 +79,25 @@ export default class Yo {
             },
           }),
         ],
-      })
+      }
+      return
     }
 
     try {
       const res = await execute({
-        schema: this.graph,
+        schema: ctx.schema!,
         document: ctx.document ?? null,
         rootValue: null,
-        contextValue: ctx.request,
+        contextValue: ctx,
         variableValues: ctx.variables,
         operationName: ctx.operationName,
       })
-      return ctx.json(res)
+      ctx.res.status = 200
+      ctx.res.data = res
+      return
     } catch (contextError: unknown) {
-      return ctx.json({
+      ctx.res.status = 500
+      ctx.res.data = {
         data: null,
         errors: [
           new GraphQLError(`GraphQL execution context error: ${contextError}`, {
@@ -98,7 +106,11 @@ export default class Yo {
             },
           }),
         ],
-      })
+      }
     }
+  }
+
+  use(fn: Middleware) {
+    this.middlewares.push(fn)
   }
 }

@@ -1,3 +1,9 @@
+import type { Context } from './context'
+
+export type Next = () => Promise<void>
+
+export type Middleware = (ctx: Context, next: Next) => Promise<void | undefined>
+
 export interface GraphQLRequest<TVariables extends VariableValues = VariableValues> {
   query?: string
   operationName?: string
