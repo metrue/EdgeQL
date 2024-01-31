@@ -1,12 +1,12 @@
-import type { GraphQLSchema, ExecutionResult, DocumentNode } from 'graphql'
+import type { GraphQLSchema } from 'graphql'
 import { Req } from './request'
 import { Res } from './response'
-import type { ExecutionContext, Environment, GraphQLRequest } from './types'
+import type { ExecutionContext, Environment } from './types'
 
 export class Context {
   public readonly request: Request
   public readonly env: Environment
-  public readonly ctx: ExecutionContext
+  public readonly exeCtx: ExecutionContext
 
   private _schema: GraphQLSchema | undefined
 
@@ -15,10 +15,10 @@ export class Context {
   public res: Res
   public req: Req | undefined
 
-  constructor(request: Request, env: Environment, ctx: ExecutionContext) {
+  constructor(request: Request, env: Environment, exeCtx: ExecutionContext) {
     this.request = request
     this.env = env
-    this.ctx = ctx
+    this.exeCtx = exeCtx
     this.res = new Res()
   }
 
@@ -57,19 +57,7 @@ export class Context {
     return this._map[key]
   }
 
-  json(body?: ExecutionResult | string, init?: ResponseInit): Response {
-    if (body) {
-      return new Response(JSON.stringify(body), {
-        status: 200,
-        ...init,
-      })
-    }
-    return new Response(JSON.stringify(this.res?.data), {
-      status: this.res?.status ?? 200,
-      headers: {
-        'Content-Type': 'application/json',
-        ...this.res?.headers,
-      },
-    })
+  json(): Response {
+    return this.res.toJSON()
   }
 }

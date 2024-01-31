@@ -7,7 +7,6 @@ import {
 } from 'graphql'
 import { Yo } from '../../../src'
 import type { Context, Next } from '../../../src'
-import process from 'process'
 
 const userType = new GraphQLObjectType({
   name: 'User',
@@ -62,11 +61,11 @@ app.use(async (ctx: Context, next: Next) => {
   const startedAt = new Date()
   await next()
   const endedAt = new Date()
-  ctx.res.headers['x-response-time'] = `${endedAt.getTime() - startedAt.getTime()}`
+  ctx.res.headers.set('x-response-time', `${endedAt.getTime() - startedAt.getTime()}`)
 })
 
 app.use(async (ctx: Context, next: Next) => {
-  ctx.res.headers['x-power-by'] = 'Yo'
+  ctx.res.headers.set('x-power-by', 'Yo')
   await next()
 })
 

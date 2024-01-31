@@ -3,13 +3,20 @@ import { parse } from 'graphql'
 import type { GraphQLRequest } from './types'
 
 export class Req {
+  readonly request: Request
+
   private _query: string | undefined
   private _operationName?: string
   private _variables: Record<string, unknown> | undefined
+  private _extensions: Record<string, unknown> | undefined
   private _document: DocumentNode | undefined
 
+  constructor(request: Request) {
+    this.request = request
+  }
+
   static async from(request: Request) {
-    const req = new Req()
+    const req = new Req(request)
 
     const contentType = request.headers.get('content-type')
     switch (contentType) {
@@ -19,12 +26,13 @@ export class Req {
         break
       }
       case 'application/json': {
-        const { query, operationName, variables /* extensions  */ } =
+        const { query, operationName, variables, extensions } =
           (await request.json()) as GraphQLRequest
 
         req.query = query
         req.variables = variables
         req.operationName = operationName
+        req.extensions = extensions
         break
       }
       case 'application/x-www-form-urlencoded': {
@@ -72,6 +80,14 @@ export class Req {
 
   get variables() {
     return this._variables
+  }
+
+  set extensions(extensions: Record<string, unknown> | undefined) {
+    this._extensions = extensions
+  }
+
+  get extensions() {
+    return this._extensions
   }
 
   set document(document: DocumentNode | undefined) {
