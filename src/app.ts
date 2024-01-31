@@ -53,7 +53,7 @@ export class Yo {
   }
 
   async handle(ctx: Context) {
-    if (!ctx.query) {
+    if (!ctx.req?.query) {
       ctx.res.status = 400
       ctx.res.data = {
         data: null,
@@ -68,12 +68,12 @@ export class Yo {
       return
     }
 
-    if (!ctx.document) {
+    if (!ctx.req?.document) {
       ctx.res.status = 400
       ctx.res.data = {
         data: null,
         errors: [
-          new GraphQLError(`could not generate document from query: ${ctx.query}`, {
+          new GraphQLError(`could not generate document from query: ${ctx.req?.query}`, {
             extensions: {
               status: 400,
             },
@@ -86,11 +86,11 @@ export class Yo {
     try {
       const res = await execute({
         schema: ctx.schema!,
-        document: ctx.document ?? null,
+        document: ctx.req?.document ?? null,
         rootValue: null,
         contextValue: ctx,
-        variableValues: ctx.variables,
-        operationName: ctx.operationName,
+        variableValues: ctx.req?.variables,
+        operationName: ctx.req?.operationName,
       })
       ctx.res.status = 200
       ctx.res.data = res

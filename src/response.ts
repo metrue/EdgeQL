@@ -1,6 +1,6 @@
 type Headers = Record<string, string | string[]>
 
-class Res {
+export class Res {
   public status?: number
   public message?: string
   public headers: Headers = {}
@@ -12,7 +12,3 @@ class Res {
     this.data = data
   }
 }
-
-class Req {}
-
-export { Res, Req }
