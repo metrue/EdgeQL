@@ -1,5 +1,6 @@
 import type { GraphQLSchema, ExecutionResult, DocumentNode } from 'graphql'
 import { parse } from 'graphql'
+import { Res } from './response'
 import type { ExecutionContext, Environment, GraphQLRequest } from './types'
 
 export class Context {
@@ -13,14 +14,15 @@ export class Context {
   private _variables: Record<string, unknown> | undefined
   private _document: DocumentNode | undefined
 
-  constructor(
-    request: Request,
-    env: Environment,
-    ctx: ExecutionContext,
-  ) {
+  private _map: Record<string, any> | undefined
+
+  public res: Res
+
+  constructor(request: Request, env: Environment, ctx: ExecutionContext) {
     this.request = request
     this.env = env
     this.ctx = ctx
+    this.res = new Res()
   }
 
   static async from(
@@ -32,6 +34,7 @@ export class Context {
     const ctx = new Context(request, env, exeContext)
 
     ctx.schema = schema
+    ctx.res = new Res()
 
     const contentType = request.headers.get('content-type')
     switch (contentType) {
@@ -43,8 +46,8 @@ export class Context {
       case 'application/json': {
         const { query, operationName, variables /* extensions  */ } =
           (await request.json()) as GraphQLRequest
-  
-        ctx.query = query 
+
+        ctx.query = query
         ctx.variables = variables
         ctx.operationName = operationName
         break
@@ -112,10 +115,30 @@ export class Context {
     this._document = document
   }
 
-  json(body: ExecutionResult | string, init?: ResponseInit): Response {
-    return new Response(JSON.stringify(body), {
-      status: 200,
-      ...init,
+  set(key: string, value: unknown): void {
+    this._map ||= {}
+    this._map[key] = value
+  }
+  get(key: string) {
+    if (!this._map) {
+      return undefined
+    }
+    return this._map[key]
+  }
+
+  json(body?: ExecutionResult | string, init?: ResponseInit): Response {
+    if (body) {
+      return new Response(JSON.stringify(body), {
+        status: 200,
+        ...init,
+      })
+    }
+    return new Response(JSON.stringify(this.res?.data), {
+      status: this.res?.status ?? 200,
+      headers: {
+        'Content-Type': 'application/json',
+        ...this.res?.headers,
+      },
     })
   }
 }
