@@ -1,18 +1,37 @@
-type Headers = Record<string, string | string[]>
+export class Res {
+  private _headers: Headers = new Headers()
+  private _status: number | undefined
+  private _body: any
 
-class Res {
-  public status?: number
-  public message?: string
-  public headers: Headers = {}
-  public data?: any
+  toJSON(): Response {
+    return new Response(JSON.stringify(this.body), {
+      status: this.status ?? 200,
+      headers: this.headers,
+    })
+  }
 
-  constructor(status?: number, message?: string, data?: any) {
-    this.status = status
-    this.message = message
-    this.data = data
+  toText(): Response {
+    return new Response(this.body, {
+      status: this.status ?? 200,
+      headers: this.headers,
+    })
+  }
+
+  set status(status: number | undefined) {
+    this._status = status
+  }
+  get status() {
+    return this._status
+  }
+
+  get headers() {
+    return this._headers
+  }
+
+  set body(body: any) {
+    this._body = body
+  }
+  get body() {
+    return this._body
   }
 }
-
-class Req {}
-
-export { Res, Req }

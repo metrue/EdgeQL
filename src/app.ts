@@ -24,6 +24,12 @@ export class Yo {
     env: Environment,
     exeContext: ExecutionContext
   ): Promise<Response> => {
+    if (request.method !== 'GET' && request.method !== 'POST') {
+      return new Response('GraphQL only supports GET and POST requests.', {
+        status: 405,
+      })
+    }
+
     let ctx: Context
     try {
       ctx = await Context.from(request, env, exeContext, this.graph)
@@ -42,20 +48,15 @@ export class Yo {
       )
     }
 
-    if (request.method !== 'GET' && request.method !== 'POST') {
-      return ctx.json('GraphQL only supports GET and POST requests.', {
-        status: 405,
-      })
-    }
-
     await compose([...this.middlewares, this.handle])(ctx)
+
     return ctx.json()
   }
 
   async handle(ctx: Context) {
-    if (!ctx.query) {
+    if (!ctx.req?.query) {
       ctx.res.status = 400
-      ctx.res.data = {
+      ctx.res.body = {
         data: null,
         errors: [
           new GraphQLError('Must provide query string', {
@@ -68,12 +69,12 @@ export class Yo {
       return
     }
 
-    if (!ctx.document) {
+    if (!ctx.req?.document) {
       ctx.res.status = 400
-      ctx.res.data = {
+      ctx.res.body = {
         data: null,
         errors: [
-          new GraphQLError(`could not generate document from query: ${ctx.query}`, {
+          new GraphQLError(`could not generate document from query: ${ctx.req?.query}`, {
             extensions: {
               status: 400,
             },
@@ -86,18 +87,18 @@ export class Yo {
     try {
       const res = await execute({
         schema: ctx.schema!,
-        document: ctx.document ?? null,
+        document: ctx.req?.document ?? null,
         rootValue: null,
         contextValue: ctx,
-        variableValues: ctx.variables,
-        operationName: ctx.operationName,
+        variableValues: ctx.req?.variables,
+        operationName: ctx.req?.operationName,
       })
       ctx.res.status = 200
-      ctx.res.data = res
+      ctx.res.body = res
       return
     } catch (contextError: unknown) {
       ctx.res.status = 500
-      ctx.res.data = {
+      ctx.res.body = {
         data: null,
         errors: [
           new GraphQLError(`GraphQL execution context error: ${contextError}`, {
