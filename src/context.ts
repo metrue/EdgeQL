@@ -5,8 +5,8 @@ import type { ExecutionContext, Environment } from './types'
 
 export class Context {
   public readonly request: Request
-  public readonly env: Environment
-  public readonly exeCtx: ExecutionContext
+  public readonly env?: Environment
+  public readonly exeCtx?: ExecutionContext
 
   private _schema: GraphQLSchema | undefined
 
@@ -15,24 +15,24 @@ export class Context {
   public res: Res
   public req: Req | undefined
 
-  constructor(request: Request, env: Environment, exeCtx: ExecutionContext) {
+  constructor(request: Request, env?: Environment, exeCtx?: ExecutionContext) {
     this.request = request
     this.env = env
     this.exeCtx = exeCtx
     this.res = new Res()
   }
 
-  static async from(
+  static async create(
     request: Request,
-    env: Environment,
-    exeContext: ExecutionContext,
+    env?: Environment,
+    exeContext?: ExecutionContext,
     schema?: GraphQLSchema
   ): Promise<Context> {
     const ctx = new Context(request, env, exeContext)
 
     ctx.schema = schema
     ctx.res = new Res()
-    ctx.req = await Req.from(request)
+    ctx.req = await Req.create(request)
 
     return ctx
   }

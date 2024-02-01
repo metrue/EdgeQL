@@ -50,12 +50,44 @@ const queryType = new GraphQLObjectType({
   },
 })
 
-const schema = new GraphQLSchema({
-  query: queryType,
+const postType = new GraphQLObjectType({
+  name: 'Post',
+  fields: {
+    id: { type: new GraphQLNonNull(GraphQLInt) },
+    name: { type: GraphQLString },
+  },
+})
+
+const postsQuery = new GraphQLObjectType({
+  name: 'Query',
+  fields: {
+    post: {
+      type: postType,
+      args: {
+        id: { type: new GraphQLNonNull(GraphQLInt) },
+      },
+      resolve: (parent: any, args: any, ctx: Context, info: any) => {
+        const { id } = args
+        return {
+          id,
+          name: 'Gone with Wind',
+        }
+      },
+    },
+  },
 })
 
 const app = new Yo()
-app.register({ schema })
+app.register({
+  schema: new GraphQLSchema({
+    query: queryType,
+  }),
+})
+app.register({
+  schema: new GraphQLSchema({
+    query: postsQuery,
+  }),
+})
 
 app.use(async (ctx: Context, next: Next) => {
   const startedAt = new Date()

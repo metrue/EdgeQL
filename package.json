@@ -20,7 +20,10 @@
     "typescript": "^5.3.3",
     "vite": "^5.0.12",
     "vitest": "^1.2.2",
-    "wrangler": "3.25.0"
+    "wrangler": "3.25.0",
+    "@pothos/core": "^3.41.0",
+    "eslint": "^8.56.0",
+    "prettier": "^3.2.4"
   },
   "private": true,
   "scripts": {
@@ -32,10 +35,8 @@
     "lint:fix": "eslint --ext js,ts src .eslintrc.cjs --fix"
   },
   "dependencies": {
-    "@pothos/core": "^3.41.0",
-    "eslint": "^8.56.0",
-    "graphql": "^16.8.1",
-    "prettier": "^3.2.4"
+    "@graphql-tools/schema": "^10.0.2",
+    "graphql": "^16.8.1"
   },
   "engines": {
     "node": ">=18.0.0"

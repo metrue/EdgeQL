@@ -24,7 +24,7 @@ describe('request', () => {
       body: JSON.stringify(graphqlRequest),
     })
 
-    const req = await Req.from(r)
+    const req = await Req.create(r)
 
     expect(req.query).toEqual(graphqlRequest.query)
     expect(req.variables).toEqual(graphqlRequest.variables)
