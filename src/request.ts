@@ -15,7 +15,7 @@ export class Req {
     this.request = request
   }
 
-  static async from(request: Request) {
+  static async create(request: Request) {
     const req = new Req(request)
 
     const contentType = request.headers.get('content-type')

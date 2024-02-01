@@ -52,4 +52,39 @@ query H($id: Int!) {
 			})
 		}
 	})
+
+	it('should return post with id and name', async () => {
+		const req = {
+			query: `
+query H($id: Int!) {
+	post(id: $id) {
+		id
+		name
+	}
+}
+`,
+			variables: { id: Math.floor(Math.random() * 100) },
+			operationName: 'H',
+		}
+		const resp = await worker.fetch('http://localhost', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify(req),
+		})
+		if (resp) {
+			expect(resp.headers.get('x-power-by')).toBe('Yo')
+			expect(resp.headers.get('x-response-time')).toBeDefined()
+			const data = await resp.json()
+			expect(data).toEqual({
+				data: {
+					post: {
+						id: req.variables.id,
+						name: 'Gone with Wind',
+					},
+				},
+			})
+		}
+	})
 })
