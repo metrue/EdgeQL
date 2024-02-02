@@ -1,6 +1,22 @@
 {
   "name": "yo",
   "version": "0.0.0",
+  "private": true,
+   "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "start": "http_proxy='' https_proxy='' wrangler dev",
+    "deploy": "http_proxy='' https_proxy=''  wrangler deploy",
+    "test:watch": "vitest",
+    "test": " vitest --run",
+    "lint": "eslint --ext js,ts src .eslintrc.cjs",
+    "lint:fix": "eslint --ext js,ts src .eslintrc.cjs --fix"
+  },
+  "dependencies": {
+    "@graphql-tools/schema": "^10.0.2",
+    "graphql": "^16.8.1"
+  },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20240117.0",
     "@types/crypto-js": "^4.1.1",
@@ -24,19 +40,6 @@
     "@pothos/core": "^3.41.0",
     "eslint": "^8.56.0",
     "prettier": "^3.2.4"
-  },
-  "private": true,
-  "scripts": {
-    "start": "http_proxy='' https_proxy='' wrangler dev",
-    "deploy": "http_proxy='' https_proxy=''  wrangler deploy",
-    "test:watch": "vitest",
-    "test": " vitest --run",
-    "lint": "eslint --ext js,ts src .eslintrc.cjs",
-    "lint:fix": "eslint --ext js,ts src .eslintrc.cjs --fix"
-  },
-  "dependencies": {
-    "@graphql-tools/schema": "^10.0.2",
-    "graphql": "^16.8.1"
   },
   "engines": {
     "node": ">=18.0.0"
