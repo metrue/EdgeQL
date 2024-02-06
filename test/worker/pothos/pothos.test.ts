@@ -24,7 +24,7 @@ query H($name: String) {
 	hello(name: $name)
 }
 `,
-			variables: { name: 'Yo' },
+			variables: { name: 'Buble' },
 			operationName: 'H',
 		}
 		const resp = await worker.fetch('http://localhost', {
@@ -38,7 +38,7 @@ query H($name: String) {
 			const data = await resp.json()
 			expect(data).toEqual({
 				data: {
-					hello: 'hello, Yo',
+					hello: 'hello, Buble',
 				},
 			})
 		}

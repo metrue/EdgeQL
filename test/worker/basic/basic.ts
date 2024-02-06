@@ -5,7 +5,7 @@ import {
   GraphQLString,
   GraphQLNonNull,
 } from 'graphql'
-import { Yo } from '../../../src'
+import { Buble } from '../../../src'
 import type { Context, Next } from '../../../src'
 
 const userType = new GraphQLObjectType({
@@ -29,7 +29,7 @@ const queryType = new GraphQLObjectType({
         const { id } = args
         return {
           id,
-          name: 'Yo',
+          name: 'Buble',
         }
       },
     },
@@ -77,7 +77,7 @@ const postsQuery = new GraphQLObjectType({
   },
 })
 
-const app = new Yo()
+const app = new Buble()
 app.register({
   schema: new GraphQLSchema({
     query: queryType,
@@ -97,7 +97,7 @@ app.use(async (ctx: Context, next: Next) => {
 })
 
 app.use(async (ctx: Context, next: Next) => {
-  ctx.res.headers.set('x-power-by', 'Yo')
+  ctx.res.headers.set('x-power-by', 'Buble')
   await next()
 })
 

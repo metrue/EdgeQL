@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest'
-import { Yo } from './app'
+import { Buble } from './app'
 
 describe('App', () => {
   it('should fail when no schema registered', async () => {
-    const app = new Yo()
+    const app = new Buble()
     const req = new Request('http://localhost', {
       method: 'POST',
       headers: {

@@ -1,5 +1,5 @@
 import SchemaBuilder from '@pothos/core'
-import { Yo } from '../../../src'
+import { Buble } from '../../../src'
 
 const builder = new SchemaBuilder({})
 builder.queryType({
@@ -17,7 +17,7 @@ builder.queryType({
   }),
 })
 
-const app = new Yo()
+const app = new Buble()
 app.register({
   schema: builder.toSchema(),
 })

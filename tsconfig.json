@@ -4,6 +4,8 @@
 		"lib": [
 			"es2021"
 		],
+		"outDir": "dist",
+	  "declaration": true,
 		"jsx": "react",
 		"module": "es2022",
 		"moduleResolution": "node",
@@ -13,13 +15,14 @@
 		"resolveJsonModule": true,
 		"allowJs": true,
 		"checkJs": false,
-		"noEmit": true,
+		"noEmit": false,
 		"isolatedModules": true,
 		"allowSyntheticDefaultImports": true,
 		"forceConsistentCasingInFileNames": true,
 		"strict": true,
 		"skipLibCheck": true
 	},
+	"include": ["src/**/*.ts"],
 	"exclude": [
     "node_modules",
     "dist"

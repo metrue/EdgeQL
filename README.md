@@ -1,3 +1,3 @@
-# Yo
+# Buble
 
-GraphQL on Edge.
+Bringing GraphQL to the Edge with effortless lightness.
