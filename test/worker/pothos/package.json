@@ -1,0 +1,22 @@
+{
+  "name": "buble-integration-test-pothos",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "pretest": "cp -rf ../../../dist edgeql && yarn install",
+    "test": "vitest index.test.ts --run"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "graphql": "^16.8.1"
+  },
+  "devDependencies": {
+    "@pothos/core": "^3.41.0",
+    "@vitest/coverage-v8": "^1.2.2",
+    "vite": "^5.0.12",
+    "vitest": "^1.2.2",
+    "wrangler": "3.25.0"
+  }
+}

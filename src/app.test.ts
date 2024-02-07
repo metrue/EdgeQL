@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest'
-import { Yo } from './app'
+import { EdgeQL } from './app'
 
 describe('App', () => {
   it('should fail when no schema registered', async () => {
-    const app = new Yo()
+    const app = new EdgeQL()
     const req = new Request('http://localhost', {
       method: 'POST',
       headers: {

@@ -187,7 +187,7 @@ describe('Compose', () => {
   it('should compose w/ next', () => {
     let called = false
 
-    return compose([])({}, async () => {
+    return compose([])({} as Context, async () => {
       called = true
     }).then(function () {
       expect(called).toBeTruthy()

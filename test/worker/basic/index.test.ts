@@ -6,7 +6,7 @@ describe('Worker', () => {
 	let worker: UnstableDevWorker
 
 	beforeAll(async () => {
-		worker = await unstable_dev('./test/worker/basic/basic.ts', {
+		worker = await unstable_dev('./index.ts', {
 			ip: '127.0.0.1',
 			local: true,
 			experimental: { disableExperimentalWarning: true },
@@ -38,7 +38,7 @@ query H($id: Int!) {
 			body: JSON.stringify(req),
 		})
 		if (resp) {
-			expect(resp.headers.get('x-power-by')).toBe('Yo')
+			expect(resp.headers.get('x-power-by')).toBe('EdgeQL')
 			expect(resp.headers.get('x-response-time')).toBeDefined()
 			expect(parseInt(resp.headers.get('x-response-time') ?? '0')).toBeGreaterThan(0)
 			const data = await resp.json()
@@ -46,7 +46,7 @@ query H($id: Int!) {
 				data: {
 					user: {
 						id: 1,
-						name: 'Yo',
+						name: 'EdgeQL',
 					},
 				},
 			})
@@ -74,7 +74,7 @@ query H($id: Int!) {
 			body: JSON.stringify(req),
 		})
 		if (resp) {
-			expect(resp.headers.get('x-power-by')).toBe('Yo')
+			expect(resp.headers.get('x-power-by')).toBe('EdgeQL')
 			expect(resp.headers.get('x-response-time')).toBeDefined()
 			const data = await resp.json()
 			expect(data).toEqual({

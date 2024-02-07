@@ -5,7 +5,7 @@ import { compose } from './compose'
 import { Context } from './context'
 import type { ExecutionContext, Environment, Middleware } from './types'
 
-export class Yo {
+export class EdgeQL {
   private schemas: GraphQLSchema[] = []
   private graph: GraphQLSchema | undefined
 

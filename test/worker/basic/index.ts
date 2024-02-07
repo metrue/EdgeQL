@@ -5,8 +5,8 @@ import {
   GraphQLString,
   GraphQLNonNull,
 } from 'graphql'
-import { Yo } from '../../../src'
-import type { Context, Next } from '../../../src'
+import { EdgeQL } from './edgeql'
+import type { Context, Next } from './edgeql'
 
 const userType = new GraphQLObjectType({
   name: 'User',
@@ -29,7 +29,7 @@ const queryType = new GraphQLObjectType({
         const { id } = args
         return {
           id,
-          name: 'Yo',
+          name: 'EdgeQL',
         }
       },
     },
@@ -77,7 +77,7 @@ const postsQuery = new GraphQLObjectType({
   },
 })
 
-const app = new Yo()
+const app = new EdgeQL()
 app.register({
   schema: new GraphQLSchema({
     query: queryType,
@@ -97,7 +97,7 @@ app.use(async (ctx: Context, next: Next) => {
 })
 
 app.use(async (ctx: Context, next: Next) => {
-  ctx.res.headers.set('x-power-by', 'Yo')
+  ctx.res.headers.set('x-power-by', 'EdgeQL')
   await next()
 })
 

@@ -1,0 +1,20 @@
+{
+  "name": "buble-integration-test-basic",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.ts",
+  "scripts": {
+    "pretest": "cp -rf ../../../dist edgeql && yarn install",
+    "test": "vitest index.test.ts --run"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "graphql": "^16.8.1"
+  },
+  "devDependencies": {
+    "@vitest/coverage-v8": "^1.2.2",
+    "vite": "^5.0.12",
+    "vitest": "^1.2.2"
+  }
+}
