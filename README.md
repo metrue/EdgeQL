@@ -63,5 +63,5 @@ export default app
 
 ### examples
 
-* [Cloudflare Worker](https://github.com/metrue/buble/examples/cloudfloare/helloworld)
+* [Cloudflare Worker](https://github.com/metrue/EdgeQL/tree/master/examples/cloudflare/helloworld)
 * Vercel Edge Function: TBD
