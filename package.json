@@ -10,9 +10,15 @@
     "start": "http_proxy='' https_proxy='' wrangler dev",
     "deploy": "http_proxy='' https_proxy=''  wrangler deploy",
     "test:watch": "vitest",
-    "test": " vitest --run",
+    "test": " vitest --dir ./src --run",
     "lint": "eslint --ext js,ts src .eslintrc.cjs",
-    "lint:fix": "eslint --ext js,ts src .eslintrc.cjs --fix"
+    "lint:fix": "eslint --ext js,ts src .eslintrc.cjs --fix",
+    "preintegration": "rm -rf edgeql.tgz && yarn pack --filename edgeql.tgz",
+    "preintegration:basic": "cd test/worker/basic && yarn add ../../../edgeql.tgz ",
+    "integration:basic": "cd test/worker/basic && vitest --run",
+    "preintegration:pothos": "cd test/worker/pothos && yarn add ../../../edgeql.tgz",
+    "integration:pothos": "cd ./test/worker/pothos && vitest --run",
+    "integration": "yarn integration:basic && yarn integration:pothos"
   },
   "dependencies": {
     "@graphql-tools/schema": "^10.0.2",

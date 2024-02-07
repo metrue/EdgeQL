@@ -1,5 +1,5 @@
-import { EdgeQL } from 'buble'
-import type { Context, Next } from 'buble'
+import { EdgeQL } from 'edgeql'
+import type { Context, Next } from 'edgeql'
 import {
   GraphQLSchema,
   GraphQLInt,

@@ -4,12 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "vitest"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "edgeql": "^0.0.3",
+    "edgeql": "../../../edgeql.tgz",
     "graphql": "^16.8.1"
   },
   "devDependencies": {
