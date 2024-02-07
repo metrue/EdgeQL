@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "pretest": "yarn cache clean && yarn install ",
     "test": "vitest --run"
   },
   "author": "",

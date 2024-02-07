@@ -14,10 +14,8 @@
     "lint": "eslint --ext js,ts src .eslintrc.cjs",
     "lint:fix": "eslint --ext js,ts src .eslintrc.cjs --fix",
     "preintegration": "rm -rf edgeql.tgz && yarn pack --filename edgeql.tgz",
-    "preintegration:basic": "cd test/worker/basic && yarn",
-    "integration:basic": "cd test/worker/basic && vitest --run",
-    "preintegration:pothos": "cd test/worker/pothos && yarn",
-    "integration:pothos": "cd ./test/worker/pothos && vitest --run",
+    "integration:basic": "cd test/worker/basic && yarn test",
+    "integration:pothos": "cd ./test/worker/pothos && yarn test",
     "integration": "yarn integration:basic && yarn integration:pothos"
   },
   "dependencies": {
