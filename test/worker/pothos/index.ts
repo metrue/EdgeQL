@@ -1,5 +1,5 @@
 import SchemaBuilder from '@pothos/core'
-import { EdgeQL } from 'edgeql'
+import { EdgeQL } from './edgeql'
 
 const builder = new SchemaBuilder({})
 builder.queryType({

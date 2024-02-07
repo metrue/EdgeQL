@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.ts",
   "scripts": {
-    "pretest": "yarn cache clean && yarn install ",
-    "test": "vitest --run"
+    "pretest": "cp -rf ../../../dist edgeql && yarn install",
+    "test": "vitest index.test.ts --run"
   },
   "author": "",
   "license": "MIT",

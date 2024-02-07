@@ -1,5 +1,3 @@
-import { EdgeQL } from 'edgeql'
-import type { Context, Next } from 'edgeql'
 import {
   GraphQLSchema,
   GraphQLInt,
@@ -7,6 +5,8 @@ import {
   GraphQLString,
   GraphQLNonNull,
 } from 'graphql'
+import { EdgeQL } from './edgeql'
+import type { Context, Next } from './edgeql'
 
 const userType = new GraphQLObjectType({
   name: 'User',
