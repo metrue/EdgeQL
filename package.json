@@ -1,7 +1,7 @@
 {
-  "name": "yo",
-  "version": "0.0.0",
-  "private": true,
+  "name": "edgeql",
+  "version": "0.0.3",
+  "license": "MIT",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": ["dist/**/*"],

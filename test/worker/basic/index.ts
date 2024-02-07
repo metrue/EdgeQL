@@ -1,3 +1,5 @@
+import { EdgeQL } from 'buble'
+import type { Context, Next } from 'buble'
 import {
   GraphQLSchema,
   GraphQLInt,
@@ -5,8 +7,6 @@ import {
   GraphQLString,
   GraphQLNonNull,
 } from 'graphql'
-import { Buble } from '../../../src'
-import type { Context, Next } from '../../../src'
 
 const userType = new GraphQLObjectType({
   name: 'User',
@@ -29,7 +29,7 @@ const queryType = new GraphQLObjectType({
         const { id } = args
         return {
           id,
-          name: 'Buble',
+          name: 'EdgeQL',
         }
       },
     },
@@ -77,7 +77,7 @@ const postsQuery = new GraphQLObjectType({
   },
 })
 
-const app = new Buble()
+const app = new EdgeQL()
 app.register({
   schema: new GraphQLSchema({
     query: queryType,
@@ -97,7 +97,7 @@ app.use(async (ctx: Context, next: Next) => {
 })
 
 app.use(async (ctx: Context, next: Next) => {
-  ctx.res.headers.set('x-power-by', 'Buble')
+  ctx.res.headers.set('x-power-by', 'EdgeQL')
   await next()
 })
 

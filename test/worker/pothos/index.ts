@@ -1,5 +1,5 @@
+import { EdgeQL } from 'edgeql'
 import SchemaBuilder from '@pothos/core'
-import { Buble } from '../../../src'
 
 const builder = new SchemaBuilder({})
 builder.queryType({
@@ -17,7 +17,7 @@ builder.queryType({
   }),
 })
 
-const app = new Buble()
+const app = new EdgeQL()
 app.register({
   schema: builder.toSchema(),
 })

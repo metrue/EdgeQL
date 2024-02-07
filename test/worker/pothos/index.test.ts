@@ -6,7 +6,7 @@ describe('Worker', () => {
 	let worker: UnstableDevWorker
 
 	beforeAll(async () => {
-		worker = await unstable_dev('./test/worker/pothos/pothos.ts', {
+		worker = await unstable_dev('./index.ts', {
 			ip: '127.0.0.1',
 			local: true,
 			experimental: { disableExperimentalWarning: true },
@@ -24,7 +24,7 @@ query H($name: String) {
 	hello(name: $name)
 }
 `,
-			variables: { name: 'Buble' },
+			variables: { name: 'EdgeQL' },
 			operationName: 'H',
 		}
 		const resp = await worker.fetch('http://localhost', {
@@ -38,7 +38,7 @@ query H($name: String) {
 			const data = await resp.json()
 			expect(data).toEqual({
 				data: {
-					hello: 'hello, Buble',
+					hello: 'hello, EdgeQL',
 				},
 			})
 		}
