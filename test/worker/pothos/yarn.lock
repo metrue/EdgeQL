@@ -899,14 +899,6 @@ edgeql@../../../edgeql.tgz:
     "@graphql-tools/schema" "^10.0.2"
     graphql "^16.8.1"
 
-edgeql@^0.0.3:
-  version "0.0.3"
-  resolved "https://registry.yarnpkg.com/edgeql/-/edgeql-0.0.3.tgz#4bb023aae0f688ad5a93bb42e0df5ba745f79b68"
-  integrity sha512-6pnArbc5zDTbLMcvB++1gOtndTj9H2/7HH7F5WAP8i6Nz8jec8AzbuUVA6lIh3335aVt7RBy80DARZCTi/A+ng==
-  dependencies:
-    "@graphql-tools/schema" "^10.0.2"
-    graphql "^16.8.1"
-
 esbuild@0.17.19:
   version "0.17.19"
   resolved "https://registry.npmjs.org/esbuild/-/esbuild-0.17.19.tgz"
