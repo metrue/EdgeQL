@@ -1,6 +1,6 @@
 import { mergeSchemas } from '@graphql-tools/schema'
-import { validateSchema, execute, GraphQLError } from 'graphql'
-import type { GraphQLSchema } from 'graphql'
+import type { GraphQLFieldResolver, GraphQLField, GraphQLSchema } from 'graphql'
+import { buildSchema, validateSchema, GraphQLObjectType, execute, GraphQLError } from 'graphql'
 import { compose } from './compose'
 import { Context } from './context'
 import type { ExecutionContext, Environment, Middleware } from './types'
@@ -122,13 +122,39 @@ export class EdgeQL {
     this.middlewares.push(fn)
   }
 
-  register({ schema }: { schema: GraphQLSchema }) {
-    const schemaValidationErrors = validateSchema(schema)
-    if (schemaValidationErrors.length > 0) {
-      throw new Error(`Invalid schema: ${schema}`)
+  register(schema: GraphQLSchema): void
+  register(schema: string, resolve: GraphQLFieldResolver<any, any, any, any>): void
+  register(...args: [GraphQLSchema] | [string, GraphQLFieldResolver<any, any, any, any>]): void {
+    if (args.length === 1 && typeof args[0] === 'object') {
+      const schemaValidationErrors = validateSchema(args[0])
+      if (schemaValidationErrors.length > 0) {
+        throw new Error(`Invalid schema: ${args[0]}`)
+      }
+      this.schemas.push(args[0])
+    } else if (args.length === 2 && typeof args[0] === 'string' && typeof args[1] === 'function') {
+      const s = buildSchema(args[0])
+
+      const typs = ['Query', 'Mutuation', 'Subscription']
+      const fields: GraphQLField<any, any, any>[] = []
+      for (const t of typs) {
+        const obj = s.getTypeMap()[t]
+        if (obj instanceof GraphQLObjectType) {
+          for (const f of Object.keys(obj.getFields())) {
+            fields.push(obj.getFields()[f])
+          }
+        }
+      }
+      if (fields.length !== 1) {
+        throw new Error('only one of Query, Mutuation, Subscription is allowed')
+      } else {
+        fields[0].resolve = args[1]
+      }
+
+      this.schemas.push(s)
+    } else {
+      throw new Error('invalid of parameters for register')
     }
 
-    this.schemas.push(schema)
     this.graph = mergeSchemas({ schemas: this.schemas ?? [] })
   }
 }
