@@ -1,3 +1,4 @@
+import { GraphQLObjectType, GraphQLString, GraphQLSchema } from 'graphql'
 import { describe, expect, it } from 'vitest'
 import { EdgeQL } from './app'
 
@@ -28,6 +29,99 @@ describe('App', () => {
           message: 'no schem registerred yet',
         },
       ],
+    })
+  })
+
+  it('should work when schema registered', async () => {
+    const app = new EdgeQL()
+    const queryType = new GraphQLObjectType({
+      name: 'Query',
+      fields: {
+        hello: {
+          type: GraphQLString,
+          resolve: () => 'world',
+        },
+      },
+    })
+    app.register(new GraphQLSchema({ query: queryType }))
+
+    const req = new Request('http://localhost', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        query: 'query H { hello }',
+        variables: {},
+        operationName: 'H',
+        extensions: {},
+      }),
+    })
+    const res = await app.fetch(req)
+    expect(res.status).toBe(200)
+    expect(await res.json()).toEqual({
+      data: {
+        hello: 'world',
+      },
+    })
+  })
+
+  it('should work when schema string registered', async () => {
+    const app = new EdgeQL()
+    const schema = `
+type Query {
+  hello: String
+}
+    `
+    app.register(schema, () => 'world')
+
+    app.register(
+      `
+type Query {
+  hi: String
+}
+      `,
+      () => 'world'
+    )
+
+    let req = new Request('http://localhost', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        query: 'query H { hello }',
+        variables: {},
+        operationName: 'H',
+        extensions: {},
+      }),
+    })
+    let res = await app.fetch(req)
+    expect(res.status).toBe(200)
+    expect(await res.json()).toEqual({
+      data: {
+        hello: 'world',
+      },
+    })
+
+    req = new Request('http://localhost', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        query: 'query H { hi }',
+        variables: {},
+        operationName: 'H',
+        extensions: {},
+      }),
+    })
+    res = await app.fetch(req)
+    expect(res.status).toBe(200)
+    expect(await res.json()).toEqual({
+      data: {
+        hi: 'world',
+      },
     })
   })
 })
