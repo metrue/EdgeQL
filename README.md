@@ -2,9 +2,30 @@
 
 Bringing GraphQL to the Edge with effortless lightness.
 
+
+## Quick Start
+
+### Hello World
+
 ```typescript
-import { EdgeQL } from 'buble'
-import type { Context } from 'buble'
+import { EdgeQL } from 'edgeql'
+
+const app = new EdgeQL()
+const schema = `
+type Query {
+  hello: String
+}
+    `
+app.register(schema, () => 'world')
+
+export default app
+```
+
+### Middleware
+
+```typescript
+import { EdgeQL } from 'edgeql'
+import type { Context } from 'edgeql'
 import {
   GraphQLSchema,
   GraphQLObjectType,
@@ -43,7 +64,7 @@ const clock: GraphQLSchema = new GraphQLSchema({
 
 // register schema
 app.register({
-	schema: helloworld,
+  schema: helloworld,
 })
 
 app.register({ 
