@@ -124,7 +124,13 @@ export class EdgeQL {
 
   register(schema: GraphQLSchema): void
   register(schema: string, resolve: GraphQLFieldResolver<any, any, any, any>): void
-  register(...args: [GraphQLSchema] | [string, GraphQLFieldResolver<any, any, any, any>]): void {
+  register(schema: string, resolves: Record<string, GraphQLFieldResolver<any, any, any, any>>): void
+  register(
+    ...args:
+      | [GraphQLSchema]
+      | [string, GraphQLFieldResolver<any, any, any, any>]
+      | [string, Record<string, GraphQLFieldResolver<any, any, any, any>>]
+  ): void {
     if (args.length === 1 && typeof args[0] === 'object') {
       const schemaValidationErrors = validateSchema(args[0])
       if (schemaValidationErrors.length > 0) {
@@ -148,6 +154,24 @@ export class EdgeQL {
         throw new Error('only one of Query, Mutuation, Subscription is allowed')
       } else {
         fields[0].resolve = args[1]
+      }
+
+      this.schemas.push(s)
+    } else if (args.length === 2 && typeof args[0] === 'string' && typeof args[1] === 'object') {
+      const s = buildSchema(args[0])
+
+      const typs = ['Query', 'Mutuation', 'Subscription']
+      for (const t of typs) {
+        const obj = s.getTypeMap()[t]
+        if (obj instanceof GraphQLObjectType) {
+          for (const f of Object.keys(obj.getFields())) {
+            if (args[1][f]) {
+              obj.getFields()[f].resolve = args[1][f]
+            } else {
+              throw new Error(`no resolve function for ${obj.getFields()[f]}`)
+            }
+          }
+        }
       }
 
       this.schemas.push(s)

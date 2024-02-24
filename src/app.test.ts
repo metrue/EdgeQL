@@ -124,4 +124,86 @@ type Query {
       },
     })
   })
+
+  it('should work when schema string mulitiple query registered', async () => {
+    const app = new EdgeQL()
+    app.register(
+      `
+type Query {
+  hi: String
+  hello: String
+  ping: String
+}
+      `,
+      {
+        hello: () => 'world',
+        hi: () => 'world',
+        ping: () => 'pong',
+      }
+    )
+
+    let req = new Request('http://localhost', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        query: 'query H { hello }',
+        variables: {},
+        operationName: 'H',
+        extensions: {},
+      }),
+    })
+    let res = await app.fetch(req)
+    expect(res.status).toBe(200)
+    expect(await res.json()).toEqual({
+      data: {
+        hello: 'world',
+      },
+    })
+
+    req = new Request('http://localhost', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        query: 'query H { hi }',
+        variables: {},
+        operationName: 'H',
+        extensions: {},
+      }),
+    })
+    res = await app.fetch(req)
+    expect(res.status).toBe(200)
+    expect(await res.json()).toEqual({
+      data: {
+        hi: 'world',
+      },
+    })
+
+    req = new Request('http://localhost', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        query: `query H { 
+          hi
+          ping
+        }`,
+        variables: {},
+        operationName: 'H',
+        extensions: {},
+      }),
+    })
+    res = await app.fetch(req)
+    expect(res.status).toBe(200)
+    expect(await res.json()).toEqual({
+      data: {
+        hi: 'world',
+        ping: 'pong',
+      },
+    })
+  })
 })
