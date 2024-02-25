@@ -66,6 +66,44 @@ describe('App', () => {
     })
   })
 
+  it('should work when schema registered with async resolve function', async () => {
+    const app = new EdgeQL()
+    const queryType = new GraphQLObjectType({
+      name: 'Query',
+      fields: {
+        hello: {
+          type: GraphQLString,
+          resolve: async () => {
+            return new Promise((res) => {
+              res('world')
+            })
+          },
+        },
+      },
+    })
+    app.register(new GraphQLSchema({ query: queryType }))
+
+    const req = new Request('http://localhost', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        query: 'query H { hello }',
+        variables: {},
+        operationName: 'H',
+        extensions: {},
+      }),
+    })
+    const res = await app.fetch(req)
+    expect(res.status).toBe(200)
+    expect(await res.json()).toEqual({
+      data: {
+        hello: 'world',
+      },
+    })
+  })
+
   it('should work when schema string registered', async () => {
     const app = new EdgeQL()
     const schema = `
