@@ -244,4 +244,35 @@ type Query {
       },
     })
   })
+  it('should be able to get the environment variable inside handler', async () => {
+    const app = new EdgeQL()
+    const schema = `
+type Query {
+  hello: String
+}
+    `
+    app.register(schema, (parent, args, ctx) => {
+      return `${ctx.env.db} world`
+    })
+    const req = new Request('http://localhost', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        query: 'query H { hello }',
+        variables: {},
+        operationName: 'H',
+        extensions: {},
+      }),
+    })
+    const db = 'hello-db'
+    const res = await app.fetch(req, { db })
+    expect(res.status).toBe(200)
+    expect(await res.json()).toEqual({
+      data: {
+        hello: `${db} world`,
+      },
+    })
+  })
 })
