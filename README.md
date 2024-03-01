@@ -1,11 +1,12 @@
 # EdgeQL
 
-Bringing GraphQL to the Edge with effortless lightness.
-
+Effortlessly craft GraphQL APIs on the Edge.
 
 ## Quick Start
 
-### Hello World
+EdgeQL supports both Schema-First and Code-First.
+
+* Schema First
 
 ```typescript
 import { EdgeQL } from 'edgeql'
@@ -21,7 +22,7 @@ app.register(schema, () => 'world')
 export default app
 ```
 
-### Middleware
+* Code First
 
 ```typescript
 import { EdgeQL } from 'edgeql'
@@ -47,40 +48,29 @@ const helloworld: GraphQLSchema = new GraphQLSchema({
     },
   })
 })
-
-const clock: GraphQLSchema = new GraphQLSchema({
-  query: new GraphQLObjectType({
-    name: 'Query',
-    fields: {
-      clock: {
-        type: GraphQLString,
-        resolve: (parent: any, args: any, ctx: Context, info: any) => {
-          return new Date().toISOString()
-        },
-      },
-    },
-  })
-})
-
-// register schema
-app.register({
-  schema: helloworld,
-})
-
-app.register({ 
-  schema: clock,
-})
-
-// middleware
-app.use(async (ctx: Context, next: Next) => {
-  const startedAt = new Date()
-  await next()
-  const endedAt = new Date()
-  ctx.res.headers.set('x-response-time', `${endedAt.getTime() - startedAt.getTime()}`)
-})
-
-export default app
 ```
+
+### Middlewares
+
+EdgeQL adopts the same middleware style like Koa, middleware are simple functions which return a `MiddlewareFunction` with signature (ctx, next). When the middleware is run, it must manually invoke `next()` to run the "downstream" middleware.
+
+For example if you wanted to track how long it takes for a request to propagate through Koa by adding an `X-Response-Time` header field the middleware would look like the following:
+
+```typescript
+async function responseTime(ctx: Context, next: Next) {
+  const start = Date.now();
+  await next();
+  const ms = Date.now() - start;
+  ctx.set('X-Response-Time', `${ms}ms`);
+}
+
+app.use(responseTime);
+```
+
+The builtin middlewares are,
+
+* [JWT](src/middleware/jwt)
+* [wallclock](src/middleware/wallclock)
 
 ### examples
 
