@@ -1,4 +1,4 @@
-import type { Context } from './context'
+import type { Context } from './context/context'
 import type { Middleware, Next } from './types'
 
 export function compose(middleware: Middleware[]) {

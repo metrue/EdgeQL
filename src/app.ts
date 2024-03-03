@@ -1,9 +1,9 @@
 import { mergeSchemas } from '@graphql-tools/schema'
-import type { GraphQLFieldResolver, GraphQLField, GraphQLSchema } from 'graphql'
+import type { GraphQLField, GraphQLSchema } from 'graphql'
 import { buildSchema, validateSchema, GraphQLObjectType, execute, GraphQLError } from 'graphql'
 import { compose } from './compose'
-import { Context } from './context'
-import type { ExecutionContext, Environment, Middleware } from './types'
+import { Context } from './context/context'
+import type { ExecutionContext, Environment, Middleware, Handler } from './types'
 
 export class EdgeQL {
   private schemas: GraphQLSchema[] = []
@@ -24,7 +24,7 @@ export class EdgeQL {
 
     let ctx: Context
     try {
-      ctx = await Context.create(request, env, exeContext, this.graph)
+      ctx = new Context(request, env, exeContext)
     } catch (e) {
       return new Response(
         JSON.stringify({
@@ -40,15 +40,18 @@ export class EdgeQL {
       )
     }
 
-    await compose([...this.middlewares, this.handle])(ctx)
+    await ctx.graphql.init(ctx.http.request)
+    ctx.graphql.schema = this.graph
+
+    await compose([...this.middlewares, this.execute])(ctx)
 
     return ctx.json()
   }
 
-  async handle(ctx: Context) {
-    if (!ctx.req?.query) {
-      ctx.res.status = 400
-      ctx.res.body = {
+  async execute(ctx: Context) {
+    if (!ctx.graphql.query) {
+      ctx.http.status = 400
+      ctx.http.body = {
         data: null,
         errors: [
           new GraphQLError('Must provide query string', {
@@ -61,12 +64,12 @@ export class EdgeQL {
       return
     }
 
-    if (!ctx.req?.document) {
-      ctx.res.status = 400
-      ctx.res.body = {
+    if (!ctx.graphql.document) {
+      ctx.http.status = 400
+      ctx.http.body = {
         data: null,
         errors: [
-          new GraphQLError(`could not generate document from query: ${ctx.req?.query}`, {
+          new GraphQLError(`could not generate document from query: ${ctx.graphql.query}`, {
             extensions: {
               status: 400,
             },
@@ -76,9 +79,9 @@ export class EdgeQL {
       return
     }
 
-    if (!ctx.schema) {
-      ctx.res.status = 400
-      ctx.res.body = {
+    if (!ctx.graphql.schema) {
+      ctx.http.status = 400
+      ctx.http.body = {
         data: null,
         errors: [
           new GraphQLError('no schem registerred yet', {
@@ -93,19 +96,19 @@ export class EdgeQL {
 
     try {
       const res = await execute({
-        schema: ctx.schema!,
-        document: ctx.req?.document ?? null,
+        schema: ctx.graphql.schema!,
+        document: ctx.graphql.document ?? null,
         rootValue: null,
         contextValue: ctx,
-        variableValues: ctx.req?.variables,
-        operationName: ctx.req?.operationName,
+        variableValues: ctx.graphql.variables,
+        operationName: ctx.graphql.operationName,
       })
-      ctx.res.status = 200
-      ctx.res.body = res
+      ctx.http.status = 200
+      ctx.http.body = res
       return
     } catch (contextError: unknown) {
-      ctx.res.status = 500
-      ctx.res.body = {
+      ctx.http.status = 500
+      ctx.http.body = {
         data: null,
         errors: [
           new GraphQLError(`GraphQL execution context error: ${contextError}`, {
@@ -122,15 +125,10 @@ export class EdgeQL {
     this.middlewares.push(fn)
   }
 
-  register(schema: GraphQLSchema): void
-  register(schema: string, resolve: GraphQLFieldResolver<any, any, any, any>): void
-  register(schema: string, resolves: Record<string, GraphQLFieldResolver<any, any, any, any>>): void
-  register(
-    ...args:
-      | [GraphQLSchema]
-      | [string, GraphQLFieldResolver<any, any, any, any>]
-      | [string, Record<string, GraphQLFieldResolver<any, any, any, any>>]
-  ): void {
+  handle(schema: GraphQLSchema): void
+  handle(schema: string, handler: Handler): void
+  handle(schema: string, handlers: Record<string, Handler>): void
+  handle(...args: [GraphQLSchema] | [string, Handler] | [string, Record<string, Handler>]): void {
     if (args.length === 1 && typeof args[0] === 'object') {
       const schemaValidationErrors = validateSchema(args[0])
       if (schemaValidationErrors.length > 0) {
@@ -153,7 +151,12 @@ export class EdgeQL {
       if (fields.length !== 1) {
         throw new Error('only one of Query, Mutuation, Subscription is allowed')
       } else {
-        fields[0].resolve = args[1]
+        fields[0].resolve = async (parents: any, arg: any, ctx: Context, info: any) => {
+          ctx.graphql.args = arg
+          ctx.graphql.parents = parents
+          ctx.graphql.info = info
+          return await (args[1] as Handler)(ctx)
+        }
       }
 
       this.schemas.push(s)
@@ -166,7 +169,18 @@ export class EdgeQL {
         if (obj instanceof GraphQLObjectType) {
           for (const f of Object.keys(obj.getFields())) {
             if (args[1][f]) {
-              obj.getFields()[f].resolve = args[1][f]
+              obj.getFields()[f].resolve = async (
+                parents: any,
+                arg: any,
+                ctx: Context,
+                info: any
+              ) => {
+                ctx.graphql.parents = parents
+                ctx.graphql.args = arg
+                ctx.graphql.info = info
+                const fn = (args[1] as any)[f] as Handler
+                return await fn(ctx)
+              }
             } else {
               throw new Error(`no resolve function for ${obj.getFields()[f]}`)
             }
