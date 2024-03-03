@@ -1,6 +1,14 @@
 import type { DocumentNode, GraphQLSchema } from 'graphql'
 import { parse } from 'graphql'
-import type { GraphQLRequest } from '../types'
+
+type VariableValues = { [name: string]: any }
+
+export interface GraphQLRequest<TVariables extends VariableValues = VariableValues> {
+  query?: string
+  operationName?: string
+  variables?: TVariables
+  extensions?: Record<string, any>
+}
 
 export class GraphQLContext {
   private _query: string | undefined
