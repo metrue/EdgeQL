@@ -1,6 +1,7 @@
 import { GraphQLObjectType, GraphQLString, GraphQLSchema } from 'graphql'
 import { describe, expect, it } from 'vitest'
 import { EdgeQL } from './app'
+import type { Context } from './context/context'
 
 describe('App', () => {
   it('should fail when no schema registered', async () => {
@@ -43,7 +44,7 @@ describe('App', () => {
         },
       },
     })
-    app.register(new GraphQLSchema({ query: queryType }))
+    app.handle(new GraphQLSchema({ query: queryType }))
 
     const req = new Request('http://localhost', {
       method: 'POST',
@@ -81,7 +82,7 @@ describe('App', () => {
         },
       },
     })
-    app.register(new GraphQLSchema({ query: queryType }))
+    app.handle(new GraphQLSchema({ query: queryType }))
 
     const req = new Request('http://localhost', {
       method: 'POST',
@@ -111,15 +112,15 @@ type Query {
   hello: String
 }
     `
-    app.register(schema, () => 'world')
+    app.handle(schema, (ctx: Context) => 'world')
 
-    app.register(
+    app.handle(
       `
 type Query {
   hi: String
 }
       `,
-      () => 'world'
+      (ctx: Context) => 'world'
     )
 
     let req = new Request('http://localhost', {
@@ -165,7 +166,7 @@ type Query {
 
   it('should work when schema string mulitiple query registered', async () => {
     const app = new EdgeQL()
-    app.register(
+    app.handle(
       `
 type Query {
   hi: String
@@ -174,9 +175,9 @@ type Query {
 }
       `,
       {
-        hello: () => 'world',
-        hi: () => 'world',
-        ping: () => 'pong',
+        hello: async (ctx: Context) => 'world',
+        hi: async (ctx: Context) => 'world',
+        ping: async (ctx: Context) => 'pong',
       }
     )
 
@@ -251,8 +252,8 @@ type Query {
   hello: String
 }
     `
-    app.register(schema, (parent, args, ctx) => {
-      return `${ctx.env.db} world`
+    app.handle(schema, (ctx: Context) => {
+      return `${ctx.runtime?.env?.db} world`
     })
     const req = new Request('http://localhost', {
       method: 'POST',

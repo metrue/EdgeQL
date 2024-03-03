@@ -17,7 +17,7 @@ type Query {
   hello: String
 }
     `
-app.register(schema, () => 'world')
+app.handle(schema, (ctx: Context) => 'world')
 
 export default app
 ```
@@ -48,6 +48,10 @@ const helloworld: GraphQLSchema = new GraphQLSchema({
     },
   })
 })
+
+app.handle(helloworld)
+
+export default app
 ```
 
 ### Middlewares

@@ -8,7 +8,7 @@ import { jwt } from '.'
 describe('JWT', () => {
   it('should unauthorize when no credentials in header', async () => {
     const app = new EdgeQL()
-    app.register(
+    app.handle(
       `
 type Query {
   name: String
@@ -37,7 +37,7 @@ type Query {
 
   it('should unauthorize when invalid token', async () => {
     const app = new EdgeQL()
-    app.register(
+    app.handle(
       `
 type Query {
   name: String
@@ -68,7 +68,7 @@ type Query {
 
   it('should authorize', async () => {
     const app = new EdgeQL()
-    app.register(
+    app.handle(
       `
 type Query {
   name: String

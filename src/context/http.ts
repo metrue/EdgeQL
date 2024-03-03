@@ -1,8 +1,14 @@
-export class Res {
+export class HttpContext {
+  public readonly request: Request
+
   private _headers: Headers = new Headers()
   private _status: number | undefined
   private _statusText: string | undefined
   private _body: any
+
+  constructor(request: Request) {
+    this.request = request
+  }
 
   toJSON(): Response {
     this.headers.set('content-type', 'application/json')

@@ -12,16 +12,16 @@ export const jwt = (options: { secret: string; alg?: string }): Middleware => {
   }
 
   return async (ctx, next) => {
-    const credentials = ctx.request.headers.get('Authorization')
+    const credentials = ctx.http.request.headers.get('Authorization')
     let token
     if (credentials) {
       const parts = credentials.split(/\s+/)
       if (parts.length !== 2) {
-        ctx.res.status = 401
-        ctx.res.statusText = 'Unauthorized'
-        ctx.res.headers.set(
+        ctx.http.status = 401
+        ctx.http.statusText = 'Unauthorized'
+        ctx.http.headers.set(
           'WWW-Authenticate',
-          `Bearer realm="${ctx.request.url}",error="invalid_request",error_description="invalid credentials structure"`
+          `Bearer realm="${ctx.http.request.url}",error="invalid_request",error_description="invalid credentials structure"`
         )
         return
       } else {
@@ -30,11 +30,11 @@ export const jwt = (options: { secret: string; alg?: string }): Middleware => {
     }
 
     if (!token) {
-      ctx.res.status = 401
-      ctx.res.statusText = 'Unauthorized'
-      ctx.res.headers.set(
+      ctx.http.status = 401
+      ctx.http.statusText = 'Unauthorized'
+      ctx.http.headers.set(
         'WWW-Authenticate',
-        `Bearer realm="${ctx.request.url}",error="invalid_request",error_description="no authorization included in request"`
+        `Bearer realm="${ctx.http.request.url}",error="invalid_request",error_description="no authorization included in request"`
       )
       return
     }
@@ -47,11 +47,11 @@ export const jwt = (options: { secret: string; alg?: string }): Middleware => {
       msg = `${e}`
     }
     if (!authorized) {
-      ctx.res.status = 401
-      ctx.res.statusText = msg
-      ctx.res.headers.set(
+      ctx.http.status = 401
+      ctx.http.statusText = msg
+      ctx.http.headers.set(
         'WWW-Authenticate',
-        `Bearer realm="${ctx.request.url}",error="invalid_token",error_description="token verification failure"`
+        `Bearer realm="${ctx.http.request.url}",error="invalid_token",error_description="token verification failure"`
       )
       return
     }
