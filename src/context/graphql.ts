@@ -1,38 +1,44 @@
-import type { DocumentNode } from 'graphql'
+import type { DocumentNode, GraphQLSchema } from 'graphql'
 import { parse } from 'graphql'
-import type { GraphQLRequest } from './types'
 
-export class Req {
-  readonly request: Request
+type VariableValues = { [name: string]: any }
 
+export interface GraphQLRequest<TVariables extends VariableValues = VariableValues> {
+  query?: string
+  operationName?: string
+  variables?: TVariables
+  extensions?: Record<string, any>
+}
+
+export class GraphQLContext {
   private _query: string | undefined
   private _operationName?: string
   private _variables: Record<string, unknown> | undefined
   private _extensions: Record<string, unknown> | undefined
+
+  private _parents: any
+  private _args: any
+  private _info: any
+
   private _document: DocumentNode | undefined
+  private _schema: GraphQLSchema | undefined
 
-  constructor(request: Request) {
-    this.request = request
-  }
-
-  static async create(request: Request) {
-    const req = new Req(request)
-
+  async init(request: Request) {
     const contentType = request.headers.get('content-type')
     switch (contentType) {
       case 'application/graphql': {
         const query = await request.text()
-        req.query = query
+        this.query = query
         break
       }
       case 'application/json': {
         const { query, operationName, variables, extensions } =
           (await request.json()) as GraphQLRequest
 
-        req.query = query
-        req.variables = variables
-        req.operationName = operationName
-        req.extensions = extensions
+        this.query = query
+        this.variables = variables
+        this.operationName = operationName
+        this.extensions = extensions
         break
       }
       case 'application/x-www-form-urlencoded': {
@@ -40,22 +46,20 @@ export class Req {
         const searchParams = new URLSearchParams(text)
         searchParams.forEach((v, k) => {
           if (k === 'query') {
-            req.query = v
+            this.query = v
           } else if (k === 'variables') {
-            req.variables = JSON.parse(v)
+            this.variables = JSON.parse(v)
           } else if (k === 'operationName') {
-            req.operationName = v
+            this.operationName = v
           }
         })
         break
       }
     }
 
-    if (req.query) {
-      req.document = parse(req.query)
+    if (this.query) {
+      this.document = parse(this.query)
     }
-
-    return req
   }
 
   set query(query: string | undefined) {
@@ -90,11 +94,43 @@ export class Req {
     return this._extensions
   }
 
+  set parents(value: any) {
+    this._parents = value
+  }
+
+  get parents() {
+    return this._parents
+  }
+
+  set args(value: any) {
+    this._args = value
+  }
+
+  get args() {
+    return this._args
+  }
+
+  set info(value: any) {
+    this._info = value
+  }
+
+  get info() {
+    return this._info
+  }
+
   set document(document: DocumentNode | undefined) {
     this._document = document
   }
 
   get document() {
     return this._document
+  }
+
+  get schema(): GraphQLSchema | undefined {
+    return this._schema
+  }
+
+  set schema(schema: GraphQLSchema | undefined) {
+    this._schema = schema
   }
 }
