@@ -8,6 +8,8 @@ export class Context {
   public readonly http: HttpContext
   public readonly graphql: GraphQLContext
 
+  private _map: Record<string, any> | undefined
+
   constructor(request: Request, env?: Environment, exeContext?: ExecutionContext) {
     this.runtime = new RuntimeContext(env, exeContext)
     this.http = new HttpContext(request)
@@ -16,5 +18,17 @@ export class Context {
 
   json(): Response {
     return this.http.toJSON()
+  }
+
+  set(key: string, value: unknown): void {
+    this._map ||= {}
+    this._map[key] = value
+  }
+
+  get(key: string) {
+    if (!this._map) {
+      return undefined
+    }
+    return this._map[key]
   }
 }
