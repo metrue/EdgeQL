@@ -21,7 +21,8 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - run: yarn install --frozen-lockfile
-      - run: yarn run lint
+      - run: yarn lint
+      - run: yarn build
       - name: 'Unit Test'
         run: yarn test --coverage --run
       # TODO enable this we have to fix this bug https://github.com/metrue/Yo/actions/runs/7811749356/job/21307409176

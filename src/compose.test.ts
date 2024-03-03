@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { compose } from './compose'
-import type { Context } from './context'
+import type { Context } from './context/context'
 import type { Next, Middleware } from './types'
 
 function wait(ms: number) {
