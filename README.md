@@ -58,7 +58,7 @@ export default app
 
 EdgeQL adopts the same middleware style like Koa, middleware are simple functions which return a `MiddlewareFunction` with signature (ctx, next). When the middleware is run, it must manually invoke `next()` to run the "downstream" middleware.
 
-For example if you wanted to track how long it takes for a request to propagate through Koa by adding an `X-Response-Time` header field the middleware would look like the following:
+For example if you wanted to track how long it takes for a request to propagate through EdgeQL by adding an `X-Response-Time` header field the middleware would look like the following:
 
 ```typescript
 async function responseTime(ctx: Context, next: Next) {
