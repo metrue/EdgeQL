@@ -36,12 +36,7 @@ const clock: GraphQLSchema = new GraphQLSchema({
   })
 })
 
-app.register({
-	schema: helloworld,
-})
-
-app.register({
-	schema: clock,
-})
+app.handle(helloworld)
+app.handle(clock)
 
 export default app
