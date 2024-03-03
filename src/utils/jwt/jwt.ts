@@ -1,5 +1,3 @@
-import * as crypto from 'crypto'
-
 import {
   utf8ToUint8Array,
   encodeBase64URL,
