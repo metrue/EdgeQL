@@ -48,7 +48,7 @@ export class EdgeQL {
     return ctx.json()
   }
 
-  async execute(ctx: Context) {
+  private async execute(ctx: Context) {
     if (!ctx.graphql.query) {
       ctx.http.status = 400
       ctx.http.body = {

@@ -10,4 +10,15 @@ describe('context', () => {
     )
     expect(ctx).not.toBe(null)
   })
+
+  it('set and get', () => {
+    const ctx = new Context(
+      new Request('http://localhost'),
+      { Bindings: {}, Variables: {} },
+      { waitUntil: () => {}, passThroughOnException: () => {} }
+    )
+    ctx.set('k', 'v')
+    expect(ctx).not.toBe(null)
+    expect(ctx.get('k')).toBe('v')
+  })
 })
