@@ -1,4 +1,6 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
+/**
+ * @jest-environment edge-runtime
+ */
 import { describe, expect, it } from 'vitest'
 import * as JWT from './jwt'
 import {
@@ -16,28 +18,26 @@ describe('JWT', () => {
     const secret = 'a-secret'
     const alg = ''
     let tok = ''
-    let err: JwtAlgorithmNotImplemented
+    let err: JwtAlgorithmNotImplemented | null = null
     try {
       tok = await JWT.sign(payload, secret, alg as AlgorithmTypes)
     } catch (e) {
       err = e as JwtAlgorithmNotImplemented
     }
     expect(tok).toBe('')
-    // @ts-ignore
     expect(err).toEqual(new JwtAlgorithmNotImplemented(alg))
   })
 
   it('JwtTokenInvalid', async () => {
     const tok = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtZXNzYWdlIjoiaGVsbG8gd29ybGQifQ'
     const secret = 'a-secret'
-    let err: JwtTokenInvalid
+    let err: JwtTokenInvalid | null = null
     let authorized = false
     try {
       authorized = await JWT.verify(tok, secret, AlgorithmTypes.HS256)
     } catch (e) {
       err = e as JwtTokenInvalid
     }
-    // @ts-ignore
     expect(err).toEqual(new JwtTokenInvalid(tok))
     expect(authorized).toBe(false)
   })
@@ -46,14 +46,13 @@ describe('JWT', () => {
     const tok =
       'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2NjQ2MDYzMzQsImV4cCI6MTY2NDYwOTkzNCwibmJmIjoiMzEwNDYwNjI2NCJ9.hpSDT_cfkxeiLWEpWVT8TDxFP3dFi27q1K7CcMcLXHc'
     const secret = 'a-secret'
-    let err: JwtTokenNotBefore
+    let err: JwtTokenNotBefore | null = null
     let authorized = false
     try {
       authorized = await JWT.verify(tok, secret, AlgorithmTypes.HS256)
     } catch (e) {
       err = e as JwtTokenNotBefore
     }
-    // @ts-ignore
     expect(err).toEqual(new JwtTokenNotBefore(tok))
     expect(authorized).toBe(false)
   })
