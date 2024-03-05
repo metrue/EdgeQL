@@ -1,14 +1,31 @@
 {
   "name": "edgeql",
-  "version": "0.1.1",
+  "version": "0.1.2",
+  "author": "Minghe <h.minghe@gmail.com> (https://github.com/metrue)",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/metrue/EdgeQL.git"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org"
+  },
+  "keywords": [
+    "web",
+    "graphql",
+    "cloudflare",
+    "workers",
+    "edge",
+    "compute@edge"
+  ],
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
     "dist/**/*"
   ],
   "scripts": {
-    "build": "tsc",
+    "build": "tsc -p tsconfig.json && tsc -p tsconfig-cjs.json",
+    "prepublishOnly": "npm run build",
     "start": "http_proxy='' https_proxy='' wrangler dev",
     "deploy": "http_proxy='' https_proxy=''  wrangler deploy",
     "test:watch": "vitest",
@@ -19,6 +36,33 @@
     "integration:basic": "cd test/worker/basic && yarn test",
     "integration:pothos": "cd ./test/worker/pothos && yarn test",
     "integration": "yarn integration:basic && yarn integration:pothos"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/esm/index.d.ts",
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js"
+    },
+    "./jwt": {
+      "types": "./dist/middleware/jwt/index.d.ts",
+      "import": "./dist/esm/middleware/jwt/index.js",
+      "require": "./dist/cjs/middleware/jwt/index.js"
+    },
+    "./wallclock": {
+      "types": "./dist/esm/middleware/wallclock/index.d.ts",
+      "import": "./dist/esm/middleware/wallclock/index.js",
+      "require": "./dist/cjs/middleware/wallclock/index.js"
+    },
+    "./utils/jwt": {
+      "types": "./dist/esm/utils/jwt/index.d.ts",
+      "import": "./dist/esm/utils/jwt/index.js",
+      "require": "./dist/cjs/utils/jwt/index.js"
+    },
+    "./utils/*": {
+      "types": "./dist/esm/utils/*.d.ts",
+      "import": "./dist/esm/utils/*.js",
+      "require": "./dist/cjs/utils/*.js"
+    }
   },
   "dependencies": {
     "@graphql-tools/schema": "^10.0.2",

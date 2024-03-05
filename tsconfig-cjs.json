@@ -1,12 +1,12 @@
 {
+  "extends": "./tsconfig.json",
   "compilerOptions": {
-    "target": "ES2020",
-    "module": "ES2020",
+    "target": "es2021",
     "lib": [
       "WebWorker"
     ],
-    "module": "es2022",
-    "outDir": "dist/esm",
+    "module": "CommonJS",
+    "outDir": "./dist/cjs",
     "declaration": true,
     "jsx": "react",
     "moduleResolution": "node",
