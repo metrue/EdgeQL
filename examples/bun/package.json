@@ -1,0 +1,12 @@
+{
+  "name": "edgeql-on-bun-example",
+  "module": "app.ts",
+  "type": "module",
+  "devDependencies": {
+    "@types/bun": "^1.0.8",
+    "edgeql": "^0.1.3"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  }
+}
