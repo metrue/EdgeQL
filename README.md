@@ -1,6 +1,14 @@
 # EdgeQL
 
-Effortlessly craft GraphQL APIs on the Edge.
+Effortlessly craft GraphQL APIs on the Edge, designed to thrive across various JavaScript runtimes.
+
+| Runtime       | Status        |  Example      |
+| ------------- | ------------- | ------------- |
+| Cloudflare Worker     |   [x]             | [cloudflare](examples/cloudflare) |
+| Bun                   |   [x]             | [Bun](examples/bun)   |
+| Deno                  |   [ ] Pending     |                       |
+| Vercel                |   [ ] Pending     |                       |
+| Node                  |   [ ] Pending     |                       |
 
 ## Quick Start
 
@@ -54,7 +62,7 @@ app.handle(helloworld)
 export default app
 ```
 
-### Middlewares
+## Middlewares
 
 EdgeQL adopts the same middleware style like Koa, middleware are simple functions which return a `MiddlewareFunction` with signature (ctx, next). When the middleware is run, it must manually invoke `next()` to run the "downstream" middleware.
 
@@ -75,8 +83,3 @@ The builtin middlewares are,
 
 * [JWT](src/middleware/jwt)
 * [wallclock](src/middleware/wallclock)
-
-### examples
-
-* [Cloudflare Worker](https://github.com/metrue/EdgeQL/tree/master/examples/cloudflare/helloworld)
-* Vercel Edge Function: TBD
