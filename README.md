@@ -4,11 +4,11 @@ Effortlessly craft GraphQL APIs on the Edge, designed to thrive across various J
 
 | Runtime       | Status        |  Example      |
 | ------------- | ------------- | ------------- |
-| Cloudflare Worker     |   [x]             | [cloudflare](examples/cloudflare) |
-| Bun                   |   [x]             | [Bun](examples/bun)   |
-| Deno                  |   [ ] Pending     |                       |
-| Vercel                |   [ ] Pending     |                       |
-| Node                  |   [ ] Pending     |                       |
+| Cloudflare Worker     | :white_check_mark:  | [cloudflare](examples/cloudflare) |
+| Bun                   | :white_check_mark:  | [Bun](examples/bun)   |
+| Deno                  | :white_large_square: Pending     |                       |
+| Vercel                | :white_large_square: Pending     |                       |
+| Node                  | :white_large_square: Pending   |                       |
 
 ## Quick Start
 
