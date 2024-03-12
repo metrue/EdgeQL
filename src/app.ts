@@ -138,7 +138,7 @@ export class EdgeQL {
     } else if (args.length === 2 && typeof args[0] === 'string' && typeof args[1] === 'function') {
       const s = buildSchema(args[0])
 
-      const typs = ['Query', 'Mutuation', 'Subscription']
+      const typs = ['Query', 'Mutation', 'Subscription']
       const fields: GraphQLField<any, any, any>[] = []
       for (const t of typs) {
         const obj = s.getTypeMap()[t]
@@ -149,7 +149,7 @@ export class EdgeQL {
         }
       }
       if (fields.length !== 1) {
-        throw new Error('only one of Query, Mutuation, Subscription is allowed')
+        throw new Error('only one of Query, Mutation, Subscription is allowed')
       } else {
         fields[0].resolve = async (parents: any, arg: any, ctx: Context, info: any) => {
           ctx.graphql.args = arg
@@ -163,7 +163,7 @@ export class EdgeQL {
     } else if (args.length === 2 && typeof args[0] === 'string' && typeof args[1] === 'object') {
       const s = buildSchema(args[0])
 
-      const typs = ['Query', 'Mutuation', 'Subscription']
+      const typs = ['Query', 'Mutation', 'Subscription']
       for (const t of typs) {
         const obj = s.getTypeMap()[t]
         if (obj instanceof GraphQLObjectType) {

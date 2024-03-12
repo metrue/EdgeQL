@@ -5,7 +5,6 @@
     "lib": [
       "WebWorker"
     ],
-    "module": "es2022",
     "outDir": "dist/esm",
     "declaration": true,
     "jsx": "react",
