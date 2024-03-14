@@ -4,13 +4,80 @@ Effortlessly craft GraphQL APIs on the Edge, designed to thrive across various J
 
 | Runtime       | Status        |  Example      |
 | ------------- | ------------- | ------------- |
-| Cloudflare Worker     | :white_check_mark:  | [cloudflare](examples/cloudflare) |
-| Bun                   | :white_check_mark:  | [Bun](examples/bun)   |
-| Deno                  | :white_large_square: Pending     |                       |
-| Vercel                | :white_large_square: Pending     |                       |
-| Node                  | :white_large_square: Pending   |                       |
+| Cloudflare Workers     | :white_check_mark:  | [cloudflare](examples/cloudflare)  |
+| Node                  | :white_check_mark:  | [node](examples/node)               |
+| Bun                   | :white_check_mark:  | [Bun](examples/bun)                 |
+| Deno                  | :white_large_square: Pending     |                        |
+| Vercel                | :white_large_square: Pending     |                        |
 
-## Quick Start
+## EdgeQL on JavaScript Runtimes
+
+### Node
+
+```javascript
+import { NodeEdgeQL } from 'edgeql/node'
+
+const app = new NodeEdgeQL()
+
+app.handle(`
+type Query {
+  hello: String
+}
+`, (ctx) => {
+  return  `hello from EdgeQL on ${ctx.runtime.runtime}`
+})
+
+app.listen({port: 4000}, ({address, family, port}) => {
+  console.log(address, family, port)
+})
+```
+
+### Bun
+
+```typescript
+import { EdgeQL } from 'edgeql'
+import type {  Context } from 'edgeql'
+
+const app = new EdgeQL()
+
+app.handle(`
+type Query {
+  hello: String
+}
+`, (_ctx: Context) => {
+  return  'hello from EdgeQL on Bun'
+})
+
+const port =  Bun.env['PORT'] ? parseInt(Bun.env['PORT']) : 3000
+console.log(`Running at http://localhost:${port}`)
+
+export default {
+  port,
+  fetch: app.fetch
+}
+```
+
+### Cloudflare Workers
+
+```typescript
+import { EdgeQL } from 'edgeql'
+import type { Context } from 'edgeql'
+
+const app = new EdgeQL()
+
+app.handle(
+`
+type Query {
+  whereami: String
+}
+`,
+(ctx: Context) => {
+  return `EdgeQL is running on ${ctx.runtime.runtime}`
+})
+```
+
+
+## Schema Design Approaches
 
 EdgeQL supports both Schema-First and Code-First.
 

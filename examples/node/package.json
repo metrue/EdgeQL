@@ -1,0 +1,24 @@
+{
+  "name": "edgeql-on-node-example",
+  "main": "dist/app.js",
+  "module": "app.ts",
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "prestart": "yarn build",
+    "start": "node dist/app.js"
+  },
+  "devDependencies": {},
+  "peerDependencies": {
+    "typescript": "^5.4.0"
+  },
+  "dependencies": {
+    "@hono/node-server": "^1.8.2",
+    "@types/node": "^20.11.27",
+    "edgeql": "^0.1.9",
+    "typescript": "^5.4.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
