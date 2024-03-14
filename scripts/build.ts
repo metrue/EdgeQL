@@ -52,6 +52,16 @@ const addExtension = (extension: string = '.js', fileExtension: string = '.ts'):
   },
 })
 
+const buildTypes = (): Plugin => ({
+  name: 'build-types',
+  setup(build) {
+    build.onEnd((result) => {
+      if (result.errors.length > 0) return
+      exec('tsc --emitDeclarationOnly --declaration')
+    })
+  },
+})
+
 const commonOptions: BuildOptions = {
   watch: isWatch,
   entryPoints,
@@ -74,7 +84,7 @@ const esmBuild = () =>
     outbase: './src',
     outdir: './dist/esm',
     format: 'esm',
-    plugins: [addExtension('.js')],
+    plugins: [addExtension('.js'), buildTypes()],
   })
 
 Promise.all([esmBuild(), cjsBuild()])
