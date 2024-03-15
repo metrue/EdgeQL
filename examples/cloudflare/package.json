@@ -13,7 +13,7 @@
     "wrangler": "^3.0.0"
   },
   "dependencies": {
-    "edgeql": "^0.1.3",
+    "edgeql": "^0.1.9",
     "graphql": "^16.8.1"
   }
 }
