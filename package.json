@@ -1,6 +1,6 @@
 {
   "name": "edgeql",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "author": "Minghe Huang <h.minghe@gmail.com> (https://github.com/metrue)",
   "license": "MIT",
   "repository": {
@@ -101,6 +101,7 @@
   },
   "dependencies": {
     "@graphql-tools/schema": "^10.0.2",
+    "@hono/node-server": "^1.8.2",
     "graphql": "^16.8.1"
   },
   "devDependencies": {
@@ -111,12 +112,13 @@
     "@types/glob": "^8.0.0",
     "@types/jest": "^29.0.2",
     "@types/node": "^20.11.27",
+    "@types/supertest": "^6.0.2",
     "@typescript-eslint/eslint-plugin": "^5.21.0",
     "@typescript-eslint/parser": "^5.21.0",
     "@vitest/coverage-v8": "^1.2.2",
     "arg": "^5.0.2",
-    "eslint": "^8.56.0",
     "esbuild": "^0.15.12",
+    "eslint": "^8.56.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-define-config": "^1.4.0",
     "eslint-import-resolver-typescript": "^2.7.1",
@@ -125,6 +127,7 @@
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-node": "^11.1.0",
     "prettier": "^3.2.4",
+    "supertest": "^6.3.4",
     "tsx": "^4.7.1",
     "typescript": "^5.3.3",
     "vite": "^5.0.12",
