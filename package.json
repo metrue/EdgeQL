@@ -1,6 +1,6 @@
 {
   "name": "edgeql",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "author": "Minghe Huang <h.minghe@gmail.com> (https://github.com/metrue)",
   "license": "MIT",
   "repository": {
@@ -48,6 +48,11 @@
       "types": "./dist/esm/app.d.ts",
       "import": "./dist/esm/app.js",
       "require": "./dist/cjs/app.js"
+    },
+    "./node": {
+      "types": "./dist/esm/node/node.d.ts",
+      "import": "./dist/esm/node/node.js",
+      "require": "./dist/cjs/node/node.js"
     },
     "./compose": {
       "types": "./dist/esm/compose.d.ts",
