@@ -1,6 +1,6 @@
 {
   "name": "edgeql",
-  "version": "0.1.9",
+  "version": "0.2.0",
   "author": "Minghe Huang <h.minghe@gmail.com> (https://github.com/metrue)",
   "license": "MIT",
   "repository": {
@@ -73,6 +73,11 @@
       "types": "./dist/esm/middleware/wallclock/index.d.ts",
       "import": "./dist/esm/middleware/wallclock/index.js",
       "require": "./dist/cjs/middleware/wallclock/index.js"
+    },
+    "./cors": {
+      "types": "./dist/esm/middleware/cors/index.d.ts",
+      "import": "./dist/esm/middleware/cors/index.js",
+      "require": "./dist/cjs/middleware/cors/index.js"
     },
     "./utils/jwt": {
       "types": "./dist/esm/utils/jwt/index.d.ts",
