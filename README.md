@@ -149,4 +149,5 @@ app.use(responseTime);
 The builtin middlewares are,
 
 * [JWT](src/middleware/jwt)
+* [CORS](src/middleware/cors)
 * [wallclock](src/middleware/wallclock)
