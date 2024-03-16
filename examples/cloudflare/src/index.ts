@@ -36,6 +36,16 @@ const clock: GraphQLSchema = new GraphQLSchema({
   })
 })
 
+app.handle(
+`
+type Query {
+  whereami: String
+}
+`,
+(ctx: Context) => {
+  return `EdgeQL is running on ${ctx.runtime.runtime}`
+})
+
 app.handle(helloworld)
 app.handle(clock)
 

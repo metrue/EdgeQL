@@ -16,12 +16,6 @@ export class EdgeQL {
     env?: Environment,
     exeContext?: ExecutionContext
   ): Promise<Response> => {
-    if (request.method !== 'GET' && request.method !== 'POST') {
-      return new Response('GraphQL only supports GET and POST requests.', {
-        status: 405,
-      })
-    }
-
     let ctx: Context
     try {
       ctx = new Context(request, env, exeContext)
