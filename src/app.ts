@@ -39,6 +39,12 @@ export class EdgeQL {
 
     await compose([...this.middlewares, this.execute])(ctx)
 
+    if (ctx.http.headers.get('Content-Type') === 'text/html') {
+      return ctx.html()
+    } else if (ctx.http.headers.get('Content-Type') === 'text/plain') {
+      return ctx.text()
+    }
+
     return ctx.json()
   }
 
