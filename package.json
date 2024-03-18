@@ -1,6 +1,6 @@
 {
   "name": "edgeql",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "author": "Minghe Huang <h.minghe@gmail.com> (https://github.com/metrue)",
   "license": "MIT",
   "repository": {
@@ -79,6 +79,11 @@
       "import": "./dist/esm/middleware/cors/index.js",
       "require": "./dist/cjs/middleware/cors/index.js"
     },
+    "./graphiql": {
+      "types": "./dist/esm/middleware/graphiql/index.d.ts",
+      "import": "./dist/esm/middleware/graphiql/index.js",
+      "require": "./dist/cjs/middleware/graphiql/index.js"
+    },
     "./utils/jwt": {
       "types": "./dist/esm/utils/jwt/index.d.ts",
       "import": "./dist/esm/utils/jwt/index.js",
@@ -103,6 +108,9 @@
       ],
       "middleware/cors": [
         "./dist/esm/middleware/cors"
+      ],
+      "middleware/graphiql": [
+        "./dist/esm/middleware/graphiql"
       ],
       "utils/jwt": [
         "./dist/esm/utils/jwt/index.d.ts"

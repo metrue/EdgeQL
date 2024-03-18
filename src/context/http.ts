@@ -20,7 +20,18 @@ export class HttpContext {
     })
   }
 
+  toHtml(): Response {
+    this.headers.set('content-type', 'text/html')
+
+    return new Response(this.body, {
+      status: this.status ?? 200,
+      headers: this.headers,
+    })
+  }
+
   toText(): Response {
+    this.headers.set('content-type', 'text/plain')
+
     return new Response(this.body, {
       status: this.status ?? 200,
       headers: this.headers,

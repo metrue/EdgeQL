@@ -1,5 +1,6 @@
 import { EdgeQL } from 'edgeql'
 import type { Context } from 'edgeql'
+import { graphiql } from 'edgeql/graphiql'
 import {
   GraphQLSchema,
   GraphQLObjectType,
@@ -48,5 +49,6 @@ type Query {
 
 app.handle(helloworld)
 app.handle(clock)
+app.use(graphiql())
 
 export default app
