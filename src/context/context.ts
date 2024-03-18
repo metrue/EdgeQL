@@ -20,6 +20,14 @@ export class Context {
     return this.http.toJSON()
   }
 
+  html(): Response {
+    return this.http.toHtml()
+  }
+
+  text(): Response {
+    return this.http.toText()
+  }
+
   set(key: string, value: unknown): void {
     this._map ||= {}
     this._map[key] = value
