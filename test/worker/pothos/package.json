@@ -15,7 +15,7 @@
   "devDependencies": {
     "@pothos/core": "^3.41.0",
     "@vitest/coverage-v8": "^1.2.2",
-    "vite": "^5.0.12",
+    "vite": "^5.1.8",
     "vitest": "^1.2.2",
     "wrangler": "3.25.0"
   }
